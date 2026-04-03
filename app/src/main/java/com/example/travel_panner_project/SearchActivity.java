@@ -1,77 +1,123 @@
 package com.example.travel_panner_project;
 
 import android.content.Intent;
-import android.location.Geocoder;
 import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SearchActivity extends AppCompatActivity {
 
     private AutoCompleteTextView sourceInput, destinationInput;
-    private Button btnFindRoutes, btnSwap;
+    private ProgressBar progressBar;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Full-screen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_search);
 
-        sourceInput = findViewById(R.id.sourceInput);
+        sourceInput      = findViewById(R.id.sourceInput);
         destinationInput = findViewById(R.id.destinationInput);
-        btnFindRoutes = findViewById(R.id.btnFindRoutes);
-        btnSwap = findViewById(R.id.btnSwap);
+        progressBar      = findViewById(R.id.searchProgress);
 
-        btnFindRoutes.setOnClickListener(v -> searchRoutes());
+        ImageButton btnSearch = findViewById(R.id.btnFindRoutes);
+        ImageButton btnSwap   = findViewById(R.id.btnSwap);
+
+        btnSearch.setOnClickListener(v -> searchRoutes());
         btnSwap.setOnClickListener(v -> swapInputs());
+
+        // Profile tab
+        findViewById(R.id.tabProfile).setOnClickListener(v ->
+                startActivity(new Intent(SearchActivity.this, ProfileActivity.class)));
+
+        // Featured trip cards — tap to auto-fill source/destination
+        wireTripCard(R.id.tripKashmirKanyakumari, "Kashmir", "Kanyakumari");
+        wireTripCard(R.id.tripMumbaiDelhi,        "Mumbai",  "Delhi");
+        wireTripCard(R.id.tripBangaloreGoa,       "Bangalore", "Goa");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        executor.shutdownNow();
+    }
+
+    private void wireTripCard(int cardId, String from, String to) {
+        CardView card = findViewById(cardId);
+        if (card != null) {
+            card.setOnClickListener(v -> {
+                sourceInput.setText(from);
+                destinationInput.setText(to);
+                // Scroll to top so user sees the filled inputs
+                sourceInput.requestFocus();
+            });
+        }
     }
 
     private void swapInputs() {
-        String tempSource = sourceInput.getText().toString();
+        String temp = sourceInput.getText().toString();
         sourceInput.setText(destinationInput.getText().toString());
-        destinationInput.setText(tempSource);
+        destinationInput.setText(temp);
     }
 
     private void searchRoutes() {
-        String source = sourceInput.getText().toString();
-        String destination = destinationInput.getText().toString();
+        String source      = sourceInput.getText().toString().trim();
+        String destination = destinationInput.getText().toString().trim();
 
         if (source.isEmpty() || destination.isEmpty()) {
             Toast.makeText(this, "Please enter both locations", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        double[] sourceCoordinates = getCoordinates(source);
-        double[] destCoordinates = getCoordinates(destination);
+        if (progressBar != null) progressBar.setVisibility(View.VISIBLE);
+        findViewById(R.id.btnFindRoutes).setEnabled(false);
 
-        if (sourceCoordinates == null || destCoordinates == null) {
-            Toast.makeText(this, "Unable to fetch location data", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        executor.execute(() -> {
+            double[] srcCoords  = getCoordinates(source);
+            double[] destCoords = getCoordinates(destination);
 
-        Intent intent = new Intent(SearchActivity.this, RouteActivity.class);
-        intent.putExtra("sourceCity", source);
-        intent.putExtra("destCity", destination);
-        intent.putExtra("sourceLat", String.valueOf(sourceCoordinates[0]));
-        intent.putExtra("sourceLon", String.valueOf(sourceCoordinates[1]));
-        intent.putExtra("destLat", String.valueOf(destCoordinates[0]));
-        intent.putExtra("destLon", String.valueOf(destCoordinates[1]));
-        startActivity(intent);
+            runOnUiThread(() -> {
+                if (progressBar != null) progressBar.setVisibility(View.GONE);
+                findViewById(R.id.btnFindRoutes).setEnabled(true);
+
+                if (srcCoords == null || destCoords == null) {
+                    Toast.makeText(this,
+                            "Could not find location. Try a more specific name.",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                Intent intent = new Intent(SearchActivity.this, RouteActivity.class);
+                intent.putExtra("sourceCity", source);
+                intent.putExtra("destCity",   destination);
+                intent.putExtra("sourceLat",  String.valueOf(srcCoords[0]));
+                intent.putExtra("sourceLon",  String.valueOf(srcCoords[1]));
+                intent.putExtra("destLat",    String.valueOf(destCoords[0]));
+                intent.putExtra("destLon",    String.valueOf(destCoords[1]));
+                startActivity(intent);
+            });
+        });
     }
 
     private double[] getCoordinates(String location) {

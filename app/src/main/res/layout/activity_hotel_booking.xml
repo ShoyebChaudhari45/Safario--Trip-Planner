@@ -1,128 +1,263 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:gravity="center"
-    android:background="@color/white">
+    android:background="@color/background"
+    tools:context=".HotelBookingActivity">
 
-    <TextView
-        android:id="@+id/cityName"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Hotels in City"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:paddingBottom="20dp" />
-
-    <!-- Booking.com -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardBookingCom"
+    <!-- Header -->
+    <LinearLayout
+        android:id="@+id/hotelHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="5dp"
-        android:layout_marginBottom="10dp">
+        android:background="@drawable/bg_hotel_header"
+        android:orientation="vertical"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="56dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Book Hotels"
+            android:textSize="30sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/cityName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Best stays in your destination"
+            android:textSize="15sp"
+            android:textColor="#B3FFFFFF"
+            android:layout_marginTop="4dp" />
+
+    </LinearLayout>
+
+    <!-- Scrollable cards -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="140dp"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:gravity="center"
-            android:padding="10dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="24dp"
+            android:paddingTop="8dp">
 
-            <ImageView
-                android:id="@+id/imgBookingCom"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:src="@drawable/booking_com"
-                android:scaleType="centerCrop"
-                android:contentDescription="Booking.com" />
-
-            <TextView
-                android:id="@+id/txtBookingCom"
-                android:layout_width="wrap_content"
+            <!-- Booking.com Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardBookingCom"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Hotels on Booking.com"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/Primary_key"
-                android:paddingTop="5dp"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/surface">
 
-    <!-- Agoda -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardAgoda"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="5dp"
-        android:layout_marginBottom="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="10dp">
+                    <ImageView
+                        android:id="@+id/imgBookingCom"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:src="@drawable/booking_com"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Booking.com" />
 
-            <ImageView
-                android:id="@+id/imgAgoda"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:src="@drawable/agoda"
-                android:scaleType="centerCrop"
-                android:contentDescription="Agoda" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp">
 
-            <TextView
-                android:id="@+id/txtAgoda"
-                android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Booking.com"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary" />
+
+                            <TextView
+                                android:id="@+id/txtBookingCom"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="World's largest hotel platform"
+                                android:textSize="13sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_place"
+                            android:contentDescription="Open"
+                            android:background="@drawable/bg_circle_icon"
+                            android:padding="6dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Agoda Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardAgoda"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Hotels on Agoda"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/Primary_key"
-                android:paddingTop="5dp"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/surface">
 
-    <!-- Google Hotels -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cardGoogleHotels"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:cardCornerRadius="10dp"
-        app:cardElevation="5dp"
-        android:layout_marginBottom="10dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="10dp">
+                    <ImageView
+                        android:id="@+id/imgAgoda"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:src="@drawable/agoda"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Agoda" />
 
-            <ImageView
-                android:id="@+id/imgGoogleHotels"
-                android:layout_width="300dp"
-                android:layout_height="200dp"
-                android:src="@drawable/google_hotels"
-                android:scaleType="centerCrop"
-                android:contentDescription="Google Hotels" />
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp">
 
-            <TextView
-                android:id="@+id/txtGoogleHotels"
-                android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Agoda"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary" />
+
+                            <TextView
+                                android:id="@+id/txtAgoda"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Great deals across Asia &amp; beyond"
+                                android:textSize="13sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_place"
+                            android:contentDescription="Open"
+                            android:background="@drawable/bg_circle_icon"
+                            android:padding="6dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Google Hotels Card -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardGoogleHotels"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="View Hotels on Google Hotels"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/Primary_key"
-                android:paddingTop="5dp"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="6dp"
+                app:cardBackgroundColor="@color/surface">
 
-</LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/imgGoogleHotels"
+                        android:layout_width="match_parent"
+                        android:layout_height="160dp"
+                        android:src="@drawable/google_hotels"
+                        android:scaleType="centerCrop"
+                        android:contentDescription="Google Hotels" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:padding="16dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Google Hotels"
+                                android:textSize="17sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/text_primary" />
+
+                            <TextView
+                                android:id="@+id/txtGoogleHotels"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Compare prices from all sites"
+                                android:textSize="13sp"
+                                android:textColor="@color/text_secondary"
+                                android:layout_marginTop="2dp" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_place"
+                            android:contentDescription="Open"
+                            android:background="@drawable/bg_circle_icon"
+                            android:padding="6dp" />
+
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

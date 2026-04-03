@@ -7,23 +7,26 @@ import android.net.Uri;
 public class TransportRedirect {
 
     public static void openBusBooking(Context context, String source, String destination) {
-        String url = "https://www.redbus.in/search?fromCityName=" + source + "&toCityName=" + destination;
+        String url = "https://www.redbus.in/search?fromCityName="
+                + Uri.encode(source)
+                + "&toCityName=" + Uri.encode(destination);
         openWebPage(context, url);
     }
 
     public static void openTrainBooking(Context context, String source, String destination) {
-        String url = "https://www.irctc.co.in/nget/train-search?fromStation=" + source + "&toStation=" + destination;
+        String url = "https://www.irctc.co.in/nget/train-search?fromStation="
+                + Uri.encode(source)
+                + "&toStation=" + Uri.encode(destination);
         openWebPage(context, url);
     }
 
     public static void openFlightBooking(Context context, String source, String destination) {
-        String url = "https://www.google.com/flights?hl=en#flt=" + source + "." + destination;
+        String url = "https://www.google.com/flights?hl=en#flt="
+                + Uri.encode(source) + "." + Uri.encode(destination);
         openWebPage(context, url);
     }
 
     private static void openWebPage(Context context, String url) {
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        context.startActivity(intent);
+        context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
     }
 }
-

@@ -1,26 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Primary Theme Colors -->
-    <color name="purple_200">#BB86FC</color>
-    <color name="purple_500">#6200EE</color>  <!-- Requested -->
-    <color name="purple_700">#3700B3</color>
-    <color name="teal_200">#03DAC5</color>
-    <color name="teal_700">#018786</color>  <!-- Requested -->
+    <!-- ── Brand Primary ── warm deep violet-blue -->
+    <color name="primary">#2B2D8C</color>
+    <color name="primary_dark">#1C1E6B</color>
+    <color name="primary_light">#4B4FCA</color>
+    <color name="primary_variant">#3537A8</color>
 
-    <!-- Additional Colors -->
+    <!-- ── Brand Secondary ── vibrant coral-orange -->
+    <color name="secondary">#FF6B35</color>
+    <color name="secondary_dark">#E5501A</color>
+    <color name="secondary_light">#FF9068</color>
+
+    <!-- ── Accent ── warm golden yellow -->
+    <color name="accent">#FFCA28</color>
+    <color name="accent_dark">#FFB300</color>
+
+    <!-- ── Gradient stops (splash / headers) ── -->
+    <color name="gradient_start">#1C1E6B</color>   <!-- deep navy -->
+    <color name="gradient_mid">#2B2D8C</color>     <!-- violet-blue -->
+    <color name="gradient_end">#FF6B35</color>     <!-- coral -->
+
+    <!-- ── Splash specific ── deep space top to warm horizon -->
+    <color name="splash_top">#0F0F3D</color>
+    <color name="splash_bottom">#2B2D8C</color>
+
+    <!-- ── Surfaces ── -->
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_variant">#FFF8F5</color>  <!-- warm white -->
+    <color name="surface_card">#FFFFFF</color>
+    <color name="background">#F9F6FF</color>       <!-- very light lavender -->
+    <color name="background_dark">#0F0F3D</color>
+
+    <!-- ── Text ── -->
+    <color name="text_primary">#1A1A2E</color>     <!-- near-black navy -->
+    <color name="text_secondary">#6B6B9A</color>   <!-- muted violet -->
+    <color name="text_hint">#B0B0D0</color>
+    <color name="text_on_primary">#FFFFFF</color>
+    <color name="text_on_dark">#FFFFFF</color>
+
+    <!-- ── Status ── -->
+    <color name="success">#2ECC71</color>
+    <color name="error">#E74C3C</color>
+    <color name="warning">#F39C12</color>
+    <color name="info">#3498DB</color>
+
+    <!-- ── Card / Divider ── -->
+    <color name="card_stroke">#EDE8FF</color>
+    <color name="divider">#E0DCF5</color>
+    <color name="overlay">#802B2D8C</color>
+
+    <!-- ── Transport chip colors ── -->
+    <color name="chip_bus">#E8F5E9</color>
+    <color name="chip_train">#EDE8FF</color>
+    <color name="chip_flight">#FFF3E0</color>
+    <color name="chip_taxi">#FCE4EC</color>
+    <color name="chip_bus_icon">#27AE60</color>
+    <color name="chip_train_icon">#2B2D8C</color>
+    <color name="chip_flight_icon">#FF6B35</color>
+    <color name="chip_taxi_icon">#E91E63</color>
+
+    <!-- ── Legacy aliases (keep for compatibility) ── -->
+    <color name="purple_200">#B0ADEE</color>
+    <color name="purple_500">#4B4FCA</color>
+    <color name="purple_700">#2B2D8C</color>
+    <color name="teal_200">#80DEEA</color>
+    <color name="teal_700">#0097A7</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
-    <color name="Primary_key">#007AFF</color> <!-- Your blue color -->
-    <color name="gray">#808080</color>
-    <color name="red">#FF0000</color>
-    <color name="green">#4CAF50</color>
-    <color name="blue">#2196F3</color>
-    <color name="yellow">#FFEB3B</color>
-    <color name="orange">#FF9800</color>
-
-    <!-- Background and Text Colors -->
-    <color name="background_light">#F5F5F5</color>
-    <color name="background_dark">#121212</color>
-    <color name="text_primary">#212121</color>
-    <color name="text_secondary">#757575</color>
+    <color name="Primary_key">#2B2D8C</color>
+    <color name="gray">#9E9EC0</color>
+    <color name="red">#E74C3C</color>
+    <color name="green">#2ECC71</color>
+    <color name="blue">#4B4FCA</color>
+    <color name="yellow">#FFCA28</color>
+    <color name="orange">#FF6B35</color>
+    <color name="background_light">#F9F6FF</color>
+    <color name="text_on_surface">#1A1A2E</color>
 </resources>

@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -40,84 +41,87 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     private RequestQueue requestQueue;
     private GoogleMap mMap;
     private MapView smallMapView;
-    private FloatingActionButton fullScreenButton;
     private LinearLayout transportOptionsContainer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Full-screen mode
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.activity_route);
 
-        // Initialize UI components
-        routeInfo = findViewById(R.id.routeInfo);
-        smallMapView = findViewById(R.id.smallMapView);
-        fullScreenButton = findViewById(R.id.fullScreenButton);
+        routeInfo                = findViewById(R.id.routeInfo);
+        smallMapView             = findViewById(R.id.smallMapView);
+        FloatingActionButton fab = findViewById(R.id.fullScreenButton);
         transportOptionsContainer = findViewById(R.id.transportOptionsContainer);
-        Button btnViewNearbyPlaces = findViewById(R.id.btnViewNearbyPlaces);
-        Button btnHotelBooking = findViewById(R.id.btnHotelBooking);
+        Button btnNearby = findViewById(R.id.btnViewNearbyPlaces);
+        Button btnHotel  = findViewById(R.id.btnHotelBooking);
         requestQueue = Volley.newRequestQueue(this);
 
-        // Get data from Intent
-        startLat = getIntent().getStringExtra("sourceLat");
-        startLon = getIntent().getStringExtra("sourceLon");
-        endLat = getIntent().getStringExtra("destLat");
-        endLon = getIntent().getStringExtra("destLon");
-        sourceCity = getIntent().getStringExtra("sourceCity");
+        startLat        = getIntent().getStringExtra("sourceLat");
+        startLon        = getIntent().getStringExtra("sourceLon");
+        endLat          = getIntent().getStringExtra("destLat");
+        endLon          = getIntent().getStringExtra("destLon");
+        sourceCity      = getIntent().getStringExtra("sourceCity");
         destinationCity = getIntent().getStringExtra("destCity");
 
-        // Button actions
-        btnHotelBooking.setOnClickListener(v -> openActivity(HotelBookingActivity.class, destinationCity));
-        btnViewNearbyPlaces.setOnClickListener(v -> openActivity(NearbyPlacesActivity.class, endLat, endLon));
+        btnHotel.setOnClickListener(v -> openHotelBooking());
+        btnNearby.setOnClickListener(v -> openNearbyPlaces());
 
-        // Fetch route
+        View.OnClickListener openFullScreen = v -> openFullScreenMap();
+        smallMapView.setOnClickListener(openFullScreen);
+        fab.setOnClickListener(openFullScreen);
+
         if (startLat != null && startLon != null && endLat != null && endLon != null) {
             fetchRoute();
         } else {
-            routeInfo.setText("Invalid location data received");
+            routeInfo.setText("Invalid location data received.");
         }
 
-        // Initialize the small map
         smallMapView.onCreate(savedInstanceState);
         smallMapView.getMapAsync(this);
 
-        // Open full-screen map
-        View.OnClickListener openFullScreen = v -> openFullScreenMap();
-        smallMapView.setOnClickListener(openFullScreen);
-        fullScreenButton.setOnClickListener(openFullScreen);
-
-        // Load transport options
         loadTransportOptions();
     }
 
-    private void openActivity(Class<?> activityClass, String... extras) {
-        Intent intent = new Intent(RouteActivity.this, activityClass);
-        if (extras.length > 0) intent.putExtra("destCity", extras[0]);
-        if (extras.length > 1) {
-            intent.putExtra("destLat", extras[0]);
-            intent.putExtra("destLon", extras[1]);
-        }
+    // ── Navigation helpers ──────────────────────────────────────────────────
+
+    private void openHotelBooking() {
+        Intent intent = new Intent(this, HotelBookingActivity.class);
+        intent.putExtra("destCity", destinationCity);
         startActivity(intent);
     }
 
-    private void openFullScreenMap() {
-        Intent intent = new Intent(RouteActivity.this, MapsActivity.class);
-        intent.putExtra("sourceLat", startLat);
-        intent.putExtra("sourceLon", startLon);
+    private void openNearbyPlaces() {
+        Intent intent = new Intent(this, NearbyPlacesActivity.class);
         intent.putExtra("destLat", endLat);
         intent.putExtra("destLon", endLon);
         startActivity(intent);
     }
 
+    private void openFullScreenMap() {
+        Intent intent = new Intent(this, MapsActivity.class);
+        intent.putExtra("sourceLat", startLat);
+        intent.putExtra("sourceLon", startLon);
+        intent.putExtra("destLat",   endLat);
+        intent.putExtra("destLon",   endLon);
+        startActivity(intent);
+    }
+
+    // ── Map ─────────────────────────────────────────────────────────────────
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        LatLng source = new LatLng(Double.parseDouble(startLat), Double.parseDouble(startLon));
-        LatLng destination = new LatLng(Double.parseDouble(endLat), Double.parseDouble(endLon));
+
+        // Guard: coordinates may be null if intent extras were missing
+        if (startLat == null || startLon == null || endLat == null || endLon == null) return;
+
+        LatLng source      = new LatLng(Double.parseDouble(startLat), Double.parseDouble(startLon));
+        LatLng destination = new LatLng(Double.parseDouble(endLat),   Double.parseDouble(endLon));
 
         mMap.addMarker(new MarkerOptions().position(source).title("Source"));
         mMap.addMarker(new MarkerOptions().position(destination).title("Destination"));
@@ -127,74 +131,112 @@ public class RouteActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     private void fetchRouteOnMap() {
-        String url = "https://router.project-osrm.org/route/v1/driving/" +
-                startLon + "," + startLat + ";" + endLon + "," + endLat + "?overview=full&geometries=geojson";
-
+        String url = buildOsrmUrl();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
+                    if (isFinishing() || isDestroyed() || mMap == null) return;
                     try {
-                        JSONArray routes = response.getJSONArray("routes");
-                        if (routes.length() > 0) {
-                            JSONArray coordinates = routes.getJSONObject(0).getJSONObject("geometry").getJSONArray("coordinates");
-                            List<LatLng> routePoints = new ArrayList<>();
-                            for (int i = 0; i < coordinates.length(); i++) {
-                                JSONArray point = coordinates.getJSONArray(i);
-                                routePoints.add(new LatLng(point.getDouble(1), point.getDouble(0)));
-                            }
-                            mMap.addPolyline(new PolylineOptions().addAll(routePoints).width(5).color(Color.BLUE));
+                        JSONArray coords = response.getJSONArray("routes")
+                                .getJSONObject(0)
+                                .getJSONObject("geometry")
+                                .getJSONArray("coordinates");
+                        List<LatLng> points = new ArrayList<>();
+                        for (int i = 0; i < coords.length(); i++) {
+                            JSONArray pt = coords.getJSONArray(i);
+                            points.add(new LatLng(pt.getDouble(1), pt.getDouble(0)));
                         }
+                        mMap.addPolyline(new PolylineOptions()
+                                .addAll(points).width(5)
+                                .color(Color.parseColor("#2B2D8C")));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 },
                 Throwable::printStackTrace);
-
         requestQueue.add(request);
     }
 
-    private void fetchRoute() {
-        String url = "https://router.project-osrm.org/route/v1/driving/" +
-                startLon + "," + startLat + ";" + endLon + "," + endLat + "?overview=full&geometries=geojson";
+    // ── Route info ──────────────────────────────────────────────────────────
 
+    private void fetchRoute() {
+        String url = buildOsrmUrl();
         JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
-                        JSONArray routes = response.getJSONArray("routes");
-                        if (routes.length() > 0) {
-                            JSONObject route = routes.getJSONObject(0);
-                            double distance = route.getDouble("distance") / 1000;
-                            double duration = route.getDouble("duration") / 60;
-                            routeInfo.setText("Distance: " + String.format("%.2f", distance) + " km\n"
-                                    + "Duration: " + String.format("%.2f", duration) + " mins");
-                        } else {
-                            routeInfo.setText("No route found.");
-                        }
+                        JSONObject route = response.getJSONArray("routes").getJSONObject(0);
+                        double km  = route.getDouble("distance") / 1000;
+                        double min = route.getDouble("duration") / 60;
+                        routeInfo.setText(
+                                sourceCity + "  →  " + destinationCity
+                                + "\n\nDistance:  " + String.format("%.1f", km) + " km"
+                                + "\nDuration:  " + String.format("%.0f", min) + " mins");
                     } catch (Exception e) {
-                        e.printStackTrace();
-                        routeInfo.setText("Error parsing route");
+                        routeInfo.setText("Could not parse route.");
                     }
                 },
-                error -> routeInfo.setText("Error fetching route"));
-
+                error -> routeInfo.setText("Error fetching route. Check your connection."));
         requestQueue.add(request);
     }
 
-    private void loadTransportOptions() {
-        addTransportOption(R.drawable.ic_bus, "Bus", "https://www.redbus.in/");
-        addTransportOption(R.drawable.ic_train, "Train", "https://www.irctc.co.in/");
-        addTransportOption(R.drawable.ic_flight, "Flight", "https://www.makemytrip.com/flights/");
+    private String buildOsrmUrl() {
+        return "https://router.project-osrm.org/route/v1/driving/"
+                + startLon + "," + startLat + ";"
+                + endLon   + "," + endLat
+                + "?overview=full&geometries=geojson";
     }
 
-    private void addTransportOption(int iconRes, String label, String baseUrl) {
-        View optionView = getLayoutInflater().inflate(R.layout.transport_option_item, transportOptionsContainer, false);
-        ((ImageView) optionView.findViewById(R.id.transportIcon)).setImageResource(iconRes);
-        ((TextView) optionView.findViewById(R.id.transportName)).setText(label);
+    // ── Transport options ───────────────────────────────────────────────────
 
-        optionView.setOnClickListener(v -> {
-            String searchUrl = baseUrl + "?from=" + sourceCity + "&to=" + destinationCity;
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(searchUrl)));
+    private void loadTransportOptions() {
+        addTransportOption(R.drawable.ic_bus,    "Bus",    false);
+        addTransportOption(R.drawable.ic_train,  "Train",  true);
+        addTransportOption(R.drawable.ic_flight, "Flight", false);
+    }
+
+    private void addTransportOption(int iconRes, String label, boolean isTrain) {
+        View item = getLayoutInflater().inflate(
+                R.layout.transport_option_item, transportOptionsContainer, false);
+        ((ImageView) item.findViewById(R.id.transportIcon)).setImageResource(iconRes);
+        ((TextView)  item.findViewById(R.id.transportName)).setText(label);
+
+        item.setOnClickListener(v -> {
+            if (isTrain) {
+                Intent intent = new Intent(this, TransportDetailsActivity.class);
+                intent.putExtra("source",      sourceCity);
+                intent.putExtra("destination", destinationCity);
+                startActivity(intent);
+            } else {
+                String url;
+                if (label.equals("Bus")) {
+                    url = "https://www.redbus.in/search?fromCityName="
+                            + Uri.encode(sourceCity)
+                            + "&toCityName=" + Uri.encode(destinationCity);
+                } else {
+                    url = "https://www.makemytrip.com/flights/";
+                }
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
+            }
         });
 
-        transportOptionsContainer.addView(optionView);
+        transportOptionsContainer.addView(item);
+    }
+
+    // ── MapView lifecycle ───────────────────────────────────────────────────
+
+    @Override protected void onResume()  { super.onResume();  smallMapView.onResume(); }
+    @Override protected void onPause()   { super.onPause();   smallMapView.onPause(); }
+    @Override protected void onStop()    { super.onStop();    smallMapView.onStop(); }
+    @Override protected void onDestroy() { super.onDestroy(); smallMapView.onDestroy(); }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        smallMapView.onLowMemory();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        smallMapView.onSaveInstanceState(outState);
     }
 }

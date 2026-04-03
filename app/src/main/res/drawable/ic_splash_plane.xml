@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Same origami plane as the launcher, scaled for splash -->
+
+    <!-- Main body (white) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M60,14
+            L100,58
+            L60,48
+            L20,58
+            Z" />
+
+    <!-- Right wing fold (coral) -->
+    <path
+        android:fillColor="#FF6B35"
+        android:pathData="
+            M60,48
+            L100,58
+            L76,72
+            Z" />
+
+    <!-- Left wing underside (warm gold) -->
+    <path
+        android:fillColor="#FFCA28"
+        android:pathData="
+            M60,48
+            L20,58
+            L44,72
+            Z" />
+
+    <!-- Tail fin (white) -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="
+            M60,48
+            L76,72
+            L60,90
+            L44,72
+            Z" />
+
+    <!-- Tail crease (coral) -->
+    <path
+        android:fillColor="#FF9068"
+        android:pathData="
+            M60,48
+            L60,90
+            L76,72
+            Z" />
+
+</vector>

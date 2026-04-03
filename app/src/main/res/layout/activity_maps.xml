@@ -1,64 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- Map Fragment -->
+    <!-- Full-screen Map -->
     <fragment
         android:id="@+id/fullscreenMap"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        class="com.google.android.gms.maps.SupportMapFragment"/>
+        class="com.google.android.gms.maps.SupportMapFragment" />
 
-    <!-- Map Type Buttons -->
-    <LinearLayout
+    <!-- Back button overlay -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        android:src="@drawable/ic_arrow_back"
+        android:background="@drawable/bg_button_primary"
+        android:contentDescription="Back"
+        android:padding="10dp" />
+
+    <!-- Map type pill bar -->
+    <androidx.cardview.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:orientation="horizontal"
-        android:background="@android:color/transparent"
-        android:padding="8dp">
+        android:layout_marginBottom="24dp"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="#F8FFFFFF">
 
-        <Button
-            android:id="@+id/btnNormal"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Normal"
-            android:background="@android:color/holo_blue_light"
-            android:textColor="@android:color/white"
-            android:padding="8dp"
-            android:layout_margin="4dp"/>
+            android:orientation="horizontal"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp">
 
-        <Button
-            android:id="@+id/btnSatellite"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Satellite"
-            android:background="@android:color/holo_green_dark"
-            android:textColor="@android:color/white"
-            android:padding="8dp"
-            android:layout_margin="4dp"/>
+            <Button
+                android:id="@+id/btnNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Normal"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:textColor="@color/primary"
+                android:background="@drawable/bg_map_type_btn"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_margin="4dp" />
 
-        <Button
-            android:id="@+id/btnTerrain"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Terrain"
-            android:background="@android:color/holo_orange_dark"
-            android:textColor="@android:color/white"
-            android:padding="8dp"
-            android:layout_margin="4dp"/>
+            <Button
+                android:id="@+id/btnSatellite"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Satellite"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:textColor="@color/primary"
+                android:background="@drawable/bg_map_type_btn"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_margin="4dp" />
 
-        <Button
-            android:id="@+id/btnHybrid"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hybrid"
-            android:background="@android:color/holo_red_light"
-            android:textColor="@android:color/white"
-            android:padding="8dp"
-            android:layout_margin="4dp"/>
-    </LinearLayout>
+            <Button
+                android:id="@+id/btnTerrain"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Terrain"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:textColor="@color/primary"
+                android:background="@drawable/bg_map_type_btn"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_margin="4dp" />
+
+            <Button
+                android:id="@+id/btnHybrid"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Hybrid"
+                android:textAllCaps="false"
+                android:textSize="13sp"
+                android:textColor="@color/primary"
+                android:background="@drawable/bg_map_type_btn"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_margin="4dp" />
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>
