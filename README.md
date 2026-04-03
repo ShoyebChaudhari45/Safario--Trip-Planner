@@ -4,13 +4,13 @@ A modern Android travel planning app that helps users search routes, compare tra
 
 ## Screenshots
 
-| Splash | Login | Sign Up | Trip Search |
+| Splash | Trip Search | Route Details | Map View |
 |---|---|---|---|
-| ![Splash](screenshots/splash.jpeg) | ![Login](screenshots/login.jpeg) | ![Sign Up](screenshots/signup.jpeg) | ![Search](screenshots/search.jpeg) |
+| ![Splash](screenshots/splash.jpeg) | ![Search](screenshots/search.jpeg) | ![Route](screenshots/route.jpeg) | ![Map](screenshots/map.jpeg) |
 
-| Route Details | Map View | Hotel Booking | Transport Options |
-|---|---|---|---|
-| ![Route](screenshots/route.jpeg) | ![Map](screenshots/map.jpeg) | ![Hotel](screenshots/hotel.jpeg) | ![Transport](screenshots/transport.jpeg) |
+| Train Search | Hotel Booking | User Profile |
+|---|---|---|
+| ![Train](screenshots/train_search.jpeg) | ![Hotel](screenshots/hotel.jpeg) | ![Profile](screenshots/profile.jpeg) |
 
 ---
 
